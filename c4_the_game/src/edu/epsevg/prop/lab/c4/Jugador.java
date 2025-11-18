@@ -17,16 +17,10 @@ public class Jugador
     int millorMoviment = -1;
     for (int i = 0; i < t.getMida(); i++){
       if (t.movpossible(i)){
-        //Solucio
-        if (t.solucio(column, color) || !t.espotmoure()) {
-        
-        }
-        else {
-          int candidat = ValorMin(t, i, , profunditat-1);
-          if ( valor  < candidat ){
-              valor = candidat;
-              millorMoviment = i;
-          }
+        int candidat = ValorMin(t, i, profunditat-1);
+        if ( valor  < candidat ){
+            valor = candidat;
+            millorMoviment = i;
         }
       }  
     }
@@ -40,12 +34,32 @@ public class Jugador
 }
 
 private int ValorMin (Tauler t, int column, int color, int profunditat) {
+    
   
-    if ( )
 }
 
-private int ValorMax () {
 
-  
+
+ unció Max-Valor(estat, joc, profunditat)
+  si Terminal(estat) o profunditat==0 llavors retorna Eval(estat);
+  Valor = -∞
+  per cada s dins de Successor(estat) fer
+  valor = Max(valor,Min-Valor(s,joc, profunditat-1))
+  fper;
+  retorna valor;
+
+
+
+private int ValorMax (Tauler t, int column, int color, int profunditat) {
+
+  if ((t.solucio(column, color) || !t.espotmoure()) || profunditat==0) return
+
+    valor = Integer.MIN_VALUE;
+  } 
+  for ( ){
+
+    
+  }
+    retorna Eval(estat);
 }
 
