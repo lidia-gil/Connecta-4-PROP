@@ -39,10 +39,9 @@ public class Jugador1
 
 
   private int MinValor(Tauler t, int column, int color, int prof) {
-    if (t.solucio(column, color*-1) || !t.espotmoure() || prof==0){
+    if (t.solucio(column, color*-1) || prof==0){
       //return evaluaEstat(t);
       if (t.solucio(column, color*-1)) return Integer.MAX_VALUE;
-      if(!t.espotmoure()) return 0;
       if (prof==0) return 0;
     } 
     int valor = Integer.MAX_VALUE;
@@ -58,10 +57,9 @@ public class Jugador1
 
 
   private int MaxValor (Tauler t, int column, int color, int prof) {
-    if ((t.solucio(column, color*-1) || !t.espotmoure()) || prof==0){
+    if (t.solucio(column, color*-1) || prof==0){
       //return evaluaEstat(t);
       if (t.solucio(column, color*-1)) return Integer.MIN_VALUE;
-      if(!t.espotmoure()) return 0;
       if (prof==0) return 0;
     } 
     int valor = Integer.MIN_VALUE;
