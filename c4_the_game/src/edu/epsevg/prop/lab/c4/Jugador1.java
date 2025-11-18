@@ -82,4 +82,33 @@ public class Jugador1
     } 
     return valor;
   }
+
+  private int evaluaEstat(Tauler t) {
+    return 0;
+  }
 }
+
+// fer classe auxiliar per fer la heuristica 
+
+/* 
+if (i==0 || i==7) h = 0;
+else if (i==1 || i==6) h = 2;
+else if (i==2 || i==5) h = 5;
+else if (i==3 || i==4) h = 10;
+
+if (amenaça || diagonal || forçar resposta || evites triple amenaça) 
+else {
+  if (altura == 0 || altura == 7) h = 10;
+  else if (altura == 1 || altura == 6) h = 5;
+  else if (altura == 2 || altura == 5) h = 2;
+  else if (altura == 3 || altura == 4) h = 0;
+}  
+*/
+
+
+// 1- Prioritzar columnes centrals
+// 2- No continuar apilant fitxes en columnes on ja no tens hueco 
+// 3- Prioritzar bloquejar doble amenaces del rival
+// 4- Prioritzar crear dobles amenaces ( guanyar des de dues columnes diferents ) 
+// 5- Prioritzar guanyar, no tapar al rival ( ja es té en compte en principi amb el minimax )
+// 6- Idea feliç: intentar fer trampes pel rival ( posar una fitxa que li faci pensar que pot guanyar en un lloc, i després guanyar per un altre lloc )
