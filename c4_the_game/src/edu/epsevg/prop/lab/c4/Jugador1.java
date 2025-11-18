@@ -21,7 +21,9 @@ public class Jugador1
         Tauler taulerMov = new Tauler(t);
         taulerMov.afegeix(i, color);
         int prof = profunditat;
-        int candidat = MinValor(taulerMov, i, color*-1, prof-1);
+        int alpha = Integer.MIN_VALUE;
+        int beta = Integer.MAX_VALUE;
+        int candidat = MinValor(taulerMov, i, color*-1, alpha, beta, prof-1);
         if (valor < candidat || valor==Integer.MIN_VALUE){
           valor = candidat;
           millorMoviment = i;
@@ -38,7 +40,7 @@ public class Jugador1
   }
 
 
-  private int MinValor(Tauler t, int column, int color, int prof) {
+  private int MinValor(Tauler t, int column, int color, int alpha, int beta, int prof) {
     if (t.solucio(column, color*-1) || prof==0){
       //return evaluaEstat(t);
       if (t.solucio(column, color*-1)) return Integer.MAX_VALUE;
@@ -49,14 +51,18 @@ public class Jugador1
       if (t.movpossible(i)){
         Tauler taulerMov = new Tauler(t);
         taulerMov.afegeix(i, color);
-        valor = Math.min(valor, MaxValor(taulerMov, i, color*-1, prof-1));
+        valor = Math.min(valor, MaxValor(taulerMov, i, color*-1, alpha, beta, prof-1));
+        if ( valor <= alpha ) { // fem la poda
+          return valor;
+        }
+        beta = Math.min(beta, valor); // actualitzem beta
       } 
     } 
     return valor;
   }
 
 
-  private int MaxValor (Tauler t, int column, int color, int prof) {
+  private int MaxValor (Tauler t, int column, int color, int alpha, int beta, int prof) {
     if (t.solucio(column, color*-1) || prof==0){
       //return evaluaEstat(t);
       if (t.solucio(column, color*-1)) return Integer.MIN_VALUE;
@@ -67,7 +73,11 @@ public class Jugador1
       if (t.movpossible(i)){
         Tauler taulerMov = new Tauler(t);
         taulerMov.afegeix(i, color);
-        valor = Math.max(valor, MinValor(taulerMov, i, color*-1, prof-1));
+        valor = Math.max(valor, MinValor(taulerMov, i, color*-1, alpha, beta, prof-1));
+        if ( beta <= valor ) { // fem la poda
+          return valor;
+        }
+        alpha = Math.max(alpha, valor); // actualitzem alpha
       } 
     } 
     return valor;
