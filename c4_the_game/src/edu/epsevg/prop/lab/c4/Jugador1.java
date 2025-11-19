@@ -42,9 +42,9 @@ public class Jugador1
 
   private int MinValor(Tauler t, int column, int color, int alpha, int beta, int prof) {
     if (t.solucio(column, color*-1) || prof==0){
-      //return evaluaEstat(t);
-      if (t.solucio(column, color*-1)) return Integer.MAX_VALUE;
-      if (prof==0) return 0;
+      return evaluaEstat(t, color);
+      //if (t.solucio(column, color*-1)) return Integer.MAX_VALUE;
+      //if (prof==0) return 0;
     } 
     int valor = Integer.MAX_VALUE;
     for (int i = 0; i < t.getMida(); i++){
@@ -64,9 +64,9 @@ public class Jugador1
 
   private int MaxValor (Tauler t, int column, int color, int alpha, int beta, int prof) {
     if (t.solucio(column, color*-1) || prof==0){
-      //return evaluaEstat(t);
-      if (t.solucio(column, color*-1)) return Integer.MIN_VALUE;
-      if (prof==0) return 0;
+      return evaluaEstat(t, color);
+      //if (t.solucio(column, color*-1)) return Integer.MIN_VALUE;
+      //if (prof==0) return 0;
     } 
     int valor = Integer.MIN_VALUE;
     for (int i = 0; i < t.getMida(); i++){
@@ -83,10 +83,61 @@ public class Jugador1
     return valor;
   }
 
-  private int evaluaEstat(Tauler t) {
-    return 0;
+  private int evaluaEstat(Tauler t, int color) {
+    int h = 0;
+    for (int fila = 0; fila < t.getMida(); fila++) {
+      for (int col = 0; col < t.getMida(); col++) {
+        
+        int colorFitxa = t.getColor(fila, col);
+
+        if (colorFitxa == color) {
+          if (col==0 || col==7) h += 0;
+          else if (col==1 || col==6) h += 2;
+          else if (col==2 || col==5) h += 5;
+          else if (col==3 || col==4) h += 10;
+        } 
+        if (colorFitxa != color){
+
+          int rival = -color;
+
+          if (t.getColor(fila, col) == rival) {
+
+            if (col + 1 < t.getMida() && t.getColor(fila, col + 1) == rival) {
+
+              boolean foratEsq = (col - 1 >= 0 && t.getColor(fila, col - 1) == 0);
+
+              boolean foratDer = (col + 2 < t.getMida() && t.getColor(fila, col + 2) == 0);
+
+              if (foratEsq && foratDer) {
+                h -= 200;  // amenaça forta
+              }
+              // si es _XX 
+              else if (foratEsq || foratDer) {
+                h -= 80;   // amenaça normal
+              }
+            }
+
+            if (col - 1 >= 0 && t.getColor(fila, col - 1) == rival) {
+
+              boolean foratEsq = (col - 2 >= 0 && t.getColor(fila, col - 2) == 0);
+
+              boolean foratDer = (col + 1 < t.getMida() && t.getColor(fila, col + 1) == 0);
+
+              if (foratEsq && foratDer) {
+                h -= 200;
+              }
+              else if (foratEsq || foratDer) {
+                h -= 80;
+              }
+            }
+          }
+        }
+      }
+    }
+    return h;
   }
 }
+
 
 // fer classe auxiliar per fer la heuristica 
 
