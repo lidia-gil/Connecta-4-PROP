@@ -94,41 +94,24 @@ public class Jugador1
           if (col==0 || col==7) h += 0;
           else if (col==1 || col==6) h += 2;
           else if (col==2 || col==5) h += 5;
-          else if (col==3 || col==4) h += 10;
+          else if (col==3 || col==4) h += 15;
         } 
+        
         if (colorFitxa != color){
 
-          int rival = -color;
+          int rival = color*-1;
+          if (col + 1 < (t.getMida()-1) && t.getColor(fila, col + 1) == rival && col != 0 ) { // mirar filesssss + prioritzar 3 fitxes del rival seguides
 
-          if (t.getColor(fila, col) == rival) {
+            boolean foratEsq = (col - 1 >= 0 && t.getColor(fila, col - 1) == 0);
 
-            if (col + 1 < t.getMida() && t.getColor(fila, col + 1) == rival) {
+            boolean foratDer = (col + 2 < t.getMida() && t.getColor(fila, col + 2) == 0);
 
-              boolean foratEsq = (col - 1 >= 0 && t.getColor(fila, col - 1) == 0);
-
-              boolean foratDer = (col + 2 < t.getMida() && t.getColor(fila, col + 2) == 0);
-
-              if (foratEsq && foratDer) {
-                h -= 200;  // amenaça forta
-              }
-              // si es _XX 
-              else if (foratEsq || foratDer) {
-                h -= 80;   // amenaça normal
-              }
+            if (foratEsq && foratDer) {
+              h -= 200;
             }
-
-            if (col - 1 >= 0 && t.getColor(fila, col - 1) == rival) {
-
-              boolean foratEsq = (col - 2 >= 0 && t.getColor(fila, col - 2) == 0);
-
-              boolean foratDer = (col + 1 < t.getMida() && t.getColor(fila, col + 1) == 0);
-
-              if (foratEsq && foratDer) {
-                h -= 200;
-              }
-              else if (foratEsq || foratDer) {
-                h -= 80;
-              }
+            
+            else if (foratEsq || foratDer) {
+              h -= 80;   
             }
           }
         }
