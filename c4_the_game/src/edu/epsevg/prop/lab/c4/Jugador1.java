@@ -12,7 +12,12 @@ public class Jugador1
     this.profunditat = profunditat;
   }
   
-  // hem de afegir per aqui al minimax
+  /**
+   * 
+   * @param t
+   * @param color
+   * @return 
+   */
   public int moviment(Tauler t, int color) {
     int valor = Integer.MIN_VALUE;
     int millorMoviment = -1;
@@ -23,8 +28,9 @@ public class Jugador1
         int prof = profunditat;
         int alpha = Integer.MIN_VALUE;
         int beta = Integer.MAX_VALUE;
-        int candidat = MinValor(taulerMov, i, color*-1, alpha, beta, prof-1);
-        if (valor < candidat || valor==Integer.MIN_VALUE){
+        int jugadorIni = color;
+        int candidat = MinValor(taulerMov, i, color*-1, alpha, beta, prof-1, jugadorIni);
+        if (valor < candidat){
           valor = candidat;
           millorMoviment = i;
         } 
@@ -33,17 +39,20 @@ public class Jugador1
     return millorMoviment;
   }
   
-
+  /**
+   * 
+   * @return 
+   */
   public String nom()
   {
     return nom;
   }
 
 
-  private int MinValor(Tauler t, int column, int color, int alpha, int beta, int prof) {
+  private int MinValor(Tauler t, int column, int color, int alpha, int beta, int prof, int jugadorIni) {
     if (t.solucio(column, color*-1) || prof==0){
-      return evaluaEstat(t, color);
-      //if (t.solucio(column, color*-1)) return Integer.MAX_VALUE;
+      return evaluaEstat(t, color, jugadorIni);
+      //if (t.solucio(column, color*-1)) return 1000000;
       //if (prof==0) return 0;
     } 
     int valor = Integer.MAX_VALUE;
@@ -51,7 +60,7 @@ public class Jugador1
       if (t.movpossible(i)){
         Tauler taulerMov = new Tauler(t);
         taulerMov.afegeix(i, color);
-        valor = Math.min(valor, MaxValor(taulerMov, i, color*-1, alpha, beta, prof-1));
+        valor = Math.min(valor, MaxValor(taulerMov, i, color*-1, alpha, beta, prof-1, jugadorIni));
         if ( valor <= alpha ) { // fem la poda
           return valor;
         }
@@ -62,10 +71,10 @@ public class Jugador1
   }
 
 
-  private int MaxValor (Tauler t, int column, int color, int alpha, int beta, int prof) {
+  private int MaxValor (Tauler t, int column, int color, int alpha, int beta, int prof, int jugadorIni) {
     if (t.solucio(column, color*-1) || prof==0){
-      return evaluaEstat(t, color);
-      //if (t.solucio(column, color*-1)) return Integer.MIN_VALUE;
+      return evaluaEstat(t, color, jugadorIni);
+      //if (t.solucio(column, color*-1)) return -1000000;
       //if (prof==0) return 0;
     } 
     int valor = Integer.MIN_VALUE;
@@ -73,7 +82,7 @@ public class Jugador1
       if (t.movpossible(i)){
         Tauler taulerMov = new Tauler(t);
         taulerMov.afegeix(i, color);
-        valor = Math.max(valor, MinValor(taulerMov, i, color*-1, alpha, beta, prof-1));
+        valor = Math.max(valor, MinValor(taulerMov, i, color*-1, alpha, beta, prof-1, jugadorIni));
         if ( beta <= valor ) { // fem la poda
           return valor;
         }
@@ -82,7 +91,7 @@ public class Jugador1
     } 
     return valor;
   }
-
+/* 
   private int evaluaEstat(Tauler t, int color) {
     int h = 0;
     for (int fila = 0; fila < t.getMida(); fila++) {
@@ -120,7 +129,7 @@ public class Jugador1
     return h;
   }
 }
-
+*/
 
 // fer classe auxiliar per fer la heuristica 
 
@@ -146,3 +155,93 @@ else {
 // 4- Prioritzar crear dobles amenaces ( guanyar des de dues columnes diferents ) 
 // 5- Prioritzar guanyar, no tapar al rival ( ja es té en compte en principi amb el minimax )
 // 6- Idea feliç: intentar fer trampes pel rival ( posar una fitxa que li faci pensar que pot guanyar en un lloc, i després guanyar per un altre lloc )
+
+
+
+  private int calculaHeuristica4(int pos0, int pos1, int pos2, int pos3) {
+    //0:buit; -1:rival; 1:jugador
+    int h = 0; 
+  
+    int buits = 0;
+    int rival = 0;
+    int jugador = 0;
+    
+    if(pos0==0) ++buits;
+    if(pos1==0) ++buits;
+    if(pos2==0) ++buits;
+    if(pos3==0) ++buits;
+    
+    if(pos0==-1) ++rival;
+    if(pos1==-1) ++rival;
+    if(pos2==-1) ++rival;
+    if(pos3==-1) ++rival;
+    
+    if(pos0==1) ++jugador;
+    if(pos1==1) ++jugador;
+    if(pos2==1) ++jugador;
+    if(pos3==1) ++jugador;
+    
+    // Jugador
+    if (jugador == 4) return 1000000;
+    if (jugador == 3 && buits == 1) return 100;
+    if (jugador == 2 && buits == 2) return 10;
+    if (jugador == 1 && buits == 3) return 1;
+
+    // Rival
+    if (rival == 4) return -1000000;
+    if (rival == 3 && buits == 1) return -100;
+    if (rival == 2 && buits == 2) return -10;
+    if (rival == 1 && buits == 3) return -1;
+        
+    return h;
+  }
+  
+  private int evaluaEstat(Tauler t, int color, int jugadorIni) {
+    int h = 0;
+    
+    //horitzontals
+    for (int fila = 0; fila < t.getMida(); fila++) {
+      for (int col = 0; col < t.getMida()-3; col++) {
+          
+        int pos0=0, pos1=0, pos2=0, pos3=0;
+        
+        if (jugadorIni == t.getColor(fila, col)) pos0 = 1;
+        else if (jugadorIni*-1 == t.getColor(fila, col)) pos0 = -1;
+        
+        if (jugadorIni == t.getColor(fila, col+1)) pos1 = 1;
+        else if (jugadorIni*-1 == t.getColor(fila, col+1)) pos1 = -1;
+        
+        if (jugadorIni == t.getColor(fila, col+2)) pos2 = 1;
+        else if (jugadorIni*-1 == t.getColor(fila, col+2)) pos2 = -1;
+        
+        if (jugadorIni == t.getColor(fila, col+3)) pos3 = 1;
+        else if (jugadorIni*-1 == t.getColor(fila, col+3)) pos3 = -1;
+        
+        h += calculaHeuristica4(pos0, pos1, pos2, pos3);
+      }  
+    }
+    
+    //verticals
+    for (int col = 0; col < t.getMida(); col++) {
+      for (int fila = 0; fila < t.getMida()-3; fila++) {
+        
+        int pos0=0, pos1=0, pos2=0, pos3=0;
+        
+        if (jugadorIni == t.getColor(fila, col)) pos0 = 1;
+        else if (jugadorIni*-1 == t.getColor(fila, col)) pos0 = -1;
+        
+        if (jugadorIni == t.getColor(fila+1, col)) pos1 = 1;
+        else if (jugadorIni*-1 == t.getColor(fila+1, col)) pos1 = -1;
+        
+        if (jugadorIni == t.getColor(fila+2, col)) pos2 = 1;
+        else if (jugadorIni*-1 == t.getColor(fila+2, col)) pos2 = -1;
+        
+        if (jugadorIni == t.getColor(fila+3, col)) pos3 = 1;
+        else if (jugadorIni*-1 == t.getColor(fila+3, col)) pos3 = -1;
+        
+        h += calculaHeuristica4(pos0, pos1, pos2, pos3);
+      }  
+    }
+    return h;
+  }
+}
