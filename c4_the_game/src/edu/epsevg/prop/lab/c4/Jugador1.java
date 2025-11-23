@@ -242,6 +242,50 @@ else {
         h += calculaHeuristica4(pos0, pos1, pos2, pos3);
       }  
     }
+
+    //diagonals adalt - dreta
+    for (int col = 0; col < t.getMida()-3; col++) {
+      for (int fila = 0; fila < t.getMida()-3; fila++) {
+        
+        int pos0=0, pos1=0, pos2=0, pos3=0;
+        
+        if (jugadorIni == t.getColor(fila, col)) pos0 = 1;
+        else if (jugadorIni*-1 == t.getColor(fila, col)) pos0 = -1;
+        
+        if (jugadorIni == t.getColor(fila+1, col+1)) pos1 = 1;
+        else if (jugadorIni*-1 == t.getColor(fila+1, col+1)) pos1 = -1;
+        
+        if (jugadorIni == t.getColor(fila+2, col+2)) pos2 = 1;
+        else if (jugadorIni*-1 == t.getColor(fila+2, col+2)) pos2 = -1;
+        
+        if (jugadorIni == t.getColor(fila+3, col+3)) pos3 = 1;
+        else if (jugadorIni*-1 == t.getColor(fila+3, col+3)) pos3 = -1;
+        
+        h += calculaHeuristica4(pos0, pos1, pos2, pos3);
+      }      
+    }
+
+    // diagonals adalt - esquerra
+    for (int col = 3; col < t.getMida(); col++) {
+      for (int fila = 0; fila < t.getMida()-3; fila++) {
+        
+        int pos0=0, pos1=0, pos2=0, pos3=0;
+        
+        if (jugadorIni == t.getColor(fila, col)) pos0 = 1;
+        else if (jugadorIni*-1 == t.getColor(fila, col)) pos0 = -1;
+        
+        if (jugadorIni == t.getColor(fila+1, col-1)) pos1 = 1;
+        else if (jugadorIni*-1 == t.getColor(fila+1, col-1)) pos1 = -1;
+        
+        if (jugadorIni == t.getColor(fila+2, col-2)) pos2 = 1;
+        else if (jugadorIni*-1 == t.getColor(fila+2, col-2)) pos2 = -1;
+        
+        if (jugadorIni == t.getColor(fila+3, col-3)) pos3 = 1;
+        else if (jugadorIni*-1 == t.getColor(fila+3, col-3)) pos3 = -1;
+        
+        h += calculaHeuristica4(pos0, pos1, pos2, pos3);
+      }      
+    }
     return h;
   }
 }
