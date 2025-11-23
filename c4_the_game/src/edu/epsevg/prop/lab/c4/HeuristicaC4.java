@@ -1,5 +1,10 @@
 package edu.epsevg.prop.lab.c4;
 
+/**
+ * Funció heurística proposada pel joc del Connecta 4.
+ * 
+ * @author Daniel Garcia i Lidia Gil
+ */
 public class HeuristicaC4 {
 
   // 1- Prioritzar columnes centrals
@@ -50,6 +55,21 @@ public class HeuristicaC4 {
       return calculaHeuristica4(pos);
   }
 
+  /**
+   * Avalua l'estat actual del tauler des de la perspectiva del jugador donat.
+   * 
+   * Examina totes les possibles línies de 4 posicions (horitzontals, verticals i diagonals)
+   * i assigna una puntuació basada en les amenaces i oportunitats de cada jugador.
+   * 
+   * @param t Tauler actual del joc
+   * @param color Color del jugador per al qual s'avalua l'estat
+   * @param colorJugadorIni Color del jugador que va iniciar
+   * @return Puntuació heurística de l'estat del tauler:<br>
+   *         - Valors positius indiquen avantatge pel jugador<br>
+   *         - Valors negatius indiquen avantatge pel rival<br>
+   *         - 0 indica un estat equilibrat del tauler<br>
+   *         - ±1000000 indica victòria immediata del jugador o rival
+   */
   public static int evaluaEstat(Tauler t, int color, int colorJugadorIni) {
     
     int h = 0;
