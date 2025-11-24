@@ -5,8 +5,8 @@ package edu.epsevg.prop.lab.c4;
  * 
  * @author Daniel Garcia i Lidia Gil
  */
-public class Jugador1
-  implements Jugador, IAuto
+public class Jugador1 
+implements Jugador, IAuto
 {
   private String nom;
   private int profunditat;
@@ -39,13 +39,13 @@ public class Jugador1
   public int moviment(Tauler t, int color) {
     int valor = Integer.MIN_VALUE;
     int millorMoviment = -1;
+    int alpha = Integer.MIN_VALUE;
+    int beta = Integer.MAX_VALUE;
     for (int i = 0; i < t.getMida(); i++){
       if (t.movpossible(i)){
         Tauler taulerMov = new Tauler(t);
         taulerMov.afegeix(i, color);
         int prof = profunditat;
-        int alpha = Integer.MIN_VALUE;
-        int beta = Integer.MAX_VALUE;
         int colorJugadorIni = color;
         int candidat = MinValor(taulerMov, i, color*-1, alpha, beta, prof-1, colorJugadorIni);
         if (valor < candidat){
@@ -141,5 +141,3 @@ public class Jugador1
     return valor;
   }
 }
-
-   

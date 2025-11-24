@@ -7,20 +7,36 @@ package edu.epsevg.prop.lab.c4;
  */
 public class HeuristicaC4 {
 
-  // 1- Prioritzar columnes centrals
-  // 2- No continuar apilant fitxes en columnes on ja no tens hueco 
-  // 3- Prioritzar bloquejar doble amenaces del rival
-  // 4- Prioritzar crear dobles amenaces ( guanyar des de dues columnes diferents ) 
-  // 5- Prioritzar guanyar, no tapar al rival ( ja es té en compte en principi amb el minimax )
-  // 6- Idea feliç: intentar fer trampes pel rival ( posar una fitxa que li faci pensar que pot guanyar en un lloc, i després guanyar per un altre lloc )
-
   /**
-   * 
-   * @param pos
-   * @return
+   * Calcula el valor heurístic d'una línia de 4 posicions ja analitzades,
+   * representades al vector {@code pos}, on cada element indica l'ocupació
+   * d'una casella:
+   * <ul>
+   *   <li>1  → casella amb fitxa del jugador</li>
+   *   <li>-1 → casella amb fitxa del rival</li>
+   *   <li>0  → casella buida</li>
+   * </ul>
+   *
+   * La funció compta quantes fitxes del jugador, del rival i quants buits
+   * hi ha a la línia i assigna una puntuació segons la força de la posició:
+   * <ul>
+   *   <li>4 fitxes del jugador → victòria immediata (+1.000.000)</li>
+   *   <li>3 fitxes del jugador + 1 buit → amenaça forta (+100)</li>
+   *   <li>2 fitxes del jugador + 2 buits → oportunitat moderada (+30)</li>
+   *   <li>1 fitxa del jugador + 3 buits → lleuger avantatge (+1)</li>
+   *   <li>4 fitxes del rival → derrota immediata (-1.000.000)</li>
+   *   <li>3 fitxes del rival + 1 buit → amenaça forta rival (-100)</li>
+   *   <li>2 fitxes del rival + 2 buits → oportunitat rival moderada (-30)</li>
+   *   <li>1 fitxa del rival + 3 buits → lleuger desavantatge (-1)</li>
+   * </ul>
+   *
+   * Si la línia no encaixa en cap d'aquests casos, retorna 0.
+   *
+   * @param pos Vector de 4 posicions amb els valors {-1, 0, 1} indicant l'estat de cada casella.
+   * @return Un valor heurístic que mesura la qualitat d'aquesta línia per al jugador.
    */
   private static int calculaHeuristica4(int pos[]) {
-    //0:buit; -1:rival; 1:jugador
+    //0:Buit; -1:Rival; 1:Jugador
     int h = 0; 
   
     int buits = 0;
@@ -36,13 +52,13 @@ public class HeuristicaC4 {
     // Jugador
     if (jugador == 4) return 1000000;
     if (jugador == 3 && buits == 1) return 100;
-    if (jugador == 2 && buits == 2) return 30; //30
+    if (jugador == 2 && buits == 2) return 30; 
     if (jugador == 1 && buits == 3) return 1;
 
     // Rival
     if (rival == 4) return -1000000;
     if (rival == 3 && buits == 1) return -100;
-    if (rival == 2 && buits == 2) return -30; //-20
+    if (rival == 2 && buits == 2) return -30; 
     if (rival == 1 && buits == 3) return -1;
         
     return h;
@@ -72,14 +88,14 @@ public class HeuristicaC4 {
    */
   private static int evaluaLinea4(Tauler t, int fila, int col, int sumaFila, int sumaCol, int colorJugadorIni) {
 
-      int pos[] = new int[4];
-      for (int i = 0; i < 4; i++) {
-          if (colorJugadorIni == t.getColor(fila, col)) pos[i] = 1;
-          else if (colorJugadorIni*-1 == t.getColor(fila, col)) pos[i] = -1;
-          fila += sumaFila;
-          col += sumaCol;
-      }
-      return calculaHeuristica4(pos);
+    int pos[] = new int[4]; // Buit
+    for (int i = 0; i < 4; i++) {
+      if (colorJugadorIni == t.getColor(fila, col)) pos[i] = 1; // Jugador
+      else if (colorJugadorIni*-1 == t.getColor(fila, col)) pos[i] = -1; // Rival
+      fila += sumaFila;
+      col += sumaCol;
+    }
+    return calculaHeuristica4(pos);
   }
 
   /**
