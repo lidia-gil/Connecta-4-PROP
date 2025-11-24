@@ -17,6 +17,7 @@ implements Jugador, IAuto
    * Constructor que crea un jugador amb una profunditat específica per a MiniMax.
    * 
    * @param profunditat Profunditat màxima de cerca per a l'algorisme MiniMax
+   * @param podaAlphaBeta Indica si s'ha d'utilitzar poda Alpha-Beta
    */
   public Jugador1(int profunditat, boolean podaAlphaBeta)
   {
