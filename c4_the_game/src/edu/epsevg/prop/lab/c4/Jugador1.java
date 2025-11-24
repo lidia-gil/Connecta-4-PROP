@@ -68,11 +68,24 @@ public class Jugador1
     return nom;
   }
 
-  
+  /**
+   * Calcula el valor mínim pel nivell MIN de l'algorisme MiniMax.
+   * Representa el torn del rival del jugador que va iniciar la cerca.
+   * El rival intenta minimitzar la puntuació des de la perspectiva del jugador inicial.
+   * 
+   * @param t Tauler actual del joc
+   * @param column Columna on es va fer l'últim moviment
+   * @param color Color del jugador actual en aquest nivell
+   * @param alpha Valor alpha per a la poda Alpha-Beta (valor màxim actual)
+   * @param beta Valor beta per a la poda Alpha-Beta (valor mínim actual)
+   * @param prof Profunditat restant de la cerca
+   * @param colorJugadorIni Color del jugador que va iniciar la cerca (perspectiva de referència)
+   * @return El valor heurístic mínim trobat per a aquest estat
+   */
   private int MinValor(Tauler t, int column, int color, int alpha, int beta, int prof, int colorJugadorIni) {
     if (t.solucio(column, color*-1) || prof==0){
       contadorEvaluacions++;
-      return HeuristicaC4.evaluaEstat(t, color, colorJugadorIni);
+      return HeuristicaC4.evaluaEstat(t, colorJugadorIni);
     } 
     int valor = Integer.MAX_VALUE;
     for (int i = 0; i < t.getMida(); i++){
@@ -91,11 +104,25 @@ public class Jugador1
     return valor;
   }
 
-
+  
+  /**
+   * Calcula el valor màxim per al nivell MAX de l'algorisme MiniMax.
+   * Representa el torn del jugador que va iniciar la cerca, que intenta maximitzar la puntuació.
+   * El jugador tria el moviment que maximitza l'avantatge des de la seva perspectiva.
+   * 
+   * @param t Tauler actual del joc
+   * @param column Columna on es va fer l'últim moviment
+   * @param color Color del jugador actual en aquest nivell (el que va començar la cerca)
+   * @param alpha Valor alpha per a la poda Alpha-Beta (valor màxim actual)
+   * @param beta Valor beta per a la poda Alpha-Beta (valor mínim actual)
+   * @param prof Profunditat restant de la cerca
+   * @param colorJugadorIni Color del jugador que va iniciar la cerca (perspectiva de referència)
+   * @return El valor heurístic màxim trobat, buscant la millor jugada possible
+   */
   private int MaxValor (Tauler t, int column, int color, int alpha, int beta, int prof, int colorJugadorIni) {
     if (t.solucio(column, color*-1) || prof==0){
       contadorEvaluacions++;
-      return HeuristicaC4.evaluaEstat(t, color, colorJugadorIni);
+      return HeuristicaC4.evaluaEstat(t, colorJugadorIni);
     } 
     int valor = Integer.MIN_VALUE;
     for (int i = 0; i < t.getMida(); i++){

@@ -14,6 +14,11 @@ public class HeuristicaC4 {
   // 5- Prioritzar guanyar, no tapar al rival ( ja es té en compte en principi amb el minimax )
   // 6- Idea feliç: intentar fer trampes pel rival ( posar una fitxa que li faci pensar que pot guanyar en un lloc, i després guanyar per un altre lloc )
 
+  /**
+   * 
+   * @param pos
+   * @return
+   */
   private static int calculaHeuristica4(int pos[]) {
     //0:buit; -1:rival; 1:jugador
     int h = 0; 
@@ -43,7 +48,29 @@ public class HeuristicaC4 {
     return h;
   }
   
-  private static int evaluaHVD(Tauler t, int fila, int col, int sumaFila, int sumaCol, int colorJugadorIni) {
+  /**
+   * Avalua una línia de 4 posicions consecutives del tauler, començant a la 
+   * posició indicada (fila, col) i avançant segons els increments (sumaFila, sumaCol).
+   * 
+   * Per a cada una de les 4 caselles:
+   *   - assigna 1 si la casella conté una fitxa del jugador inicial,
+   *   - assigna -1 si conté una fitxa del rival,
+   *   - assigna 0 si és buida.
+   * 
+   * A continuació, passa aquest vector de 4 posicions a la funció 
+   * {@code calculaHeuristica4(pos)} per obtenir el valor heurístic 
+   * d’aquesta seqüència.
+   * 
+   * @param t                El tauler de joc.
+   * @param fila             La fila inicial des de la qual comença la línia.
+   * @param col              La columna inicial des de la qual comença la línia.
+   * @param sumaFila         Increment de fila per cada pas (direcció vertical/diagonal).
+   * @param sumaCol          Increment de columna per cada pas (direcció horitzontal/diagonal).
+   * @param colorJugadorIni  El color del jugador que estem avaluant (1 o -1).
+   * 
+   * @return El valor heurístic corresponent a aquesta línia de 4 caselles.
+   */
+  private static int evaluaLinea4(Tauler t, int fila, int col, int sumaFila, int sumaCol, int colorJugadorIni) {
 
       int pos[] = new int[4];
       for (int i = 0; i < 4; i++) {
@@ -62,47 +89,41 @@ public class HeuristicaC4 {
    * i assigna una puntuació basada en les amenaces i oportunitats de cada jugador.
    * 
    * @param t Tauler actual del joc
-   * @param color Color del jugador per al qual s'avalua l'estat
    * @param colorJugadorIni Color del jugador que va iniciar
    * @return Puntuació heurística de l'estat del tauler:<br>
    *         - Valors positius indiquen avantatge pel jugador<br>
    *         - Valors negatius indiquen avantatge pel rival<br>
    *         - 0 indica un estat equilibrat del tauler<br>
-   *         - ±1000000 indica victòria immediata del jugador o rival
    */
-  public static int evaluaEstat(Tauler t, int color, int colorJugadorIni) {
+  public static int evaluaEstat(Tauler t, int colorJugadorIni) {
     
     int h = 0;
     
     //horitzontals
     for (int fila = 0; fila < t.getMida(); fila++) {
       for (int col = 0; col < t.getMida()-3; col++) {
-        h += evaluaHVD(t, fila, col, 0, 1, colorJugadorIni);
-        if (h >= 1000000) return h;
+        h += evaluaLinea4(t, fila, col, 0, 1, colorJugadorIni);
       }  
     }
     
     //verticals
     for (int col = 0; col < t.getMida(); col++) {
       for (int fila = 0; fila < t.getMida()-3; fila++) {
-        h += evaluaHVD(t, fila, col, 1, 0, colorJugadorIni);
-        if (h >= 1000000) return h;
+        h += evaluaLinea4(t, fila, col, 1, 0, colorJugadorIni);
       }  
     }
 
     //diagonals adalt - dreta
     for (int col = 0; col < t.getMida()-3; col++) {
       for (int fila = 0; fila < t.getMida()-3; fila++) {
-        h += evaluaHVD(t, fila, col, 1, 1, colorJugadorIni);
-        if (h >= 1000000) return h;
+        h += evaluaLinea4(t, fila, col, 1, 1, colorJugadorIni);
       }      
     }
 
     // diagonals adalt - esquerra
     for (int col = 3; col < t.getMida(); col++) {
       for (int fila = 0; fila < t.getMida()-3; fila++) {
-        h += evaluaHVD(t, fila, col, 1, -1, colorJugadorIni);
-        if (h >= 1000000) return h;
+        h += evaluaLinea4(t, fila, col, 1, -1, colorJugadorIni);
       }      
     }
     return h;
